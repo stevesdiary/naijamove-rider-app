@@ -6,7 +6,7 @@ import {
   BelongsTo, 
   HasMany 
 } from 'sequelize-typescript';
-import { FarmerProfile } from './Farmer';
+import Farmer from './Farmer';
 import { DataTypes } from 'sequelize';
 import { Review } from './Review';
 
@@ -22,15 +22,15 @@ export class Product extends Model {
 	})
 	id!: string;
 
-  @ForeignKey(() => FarmerProfile)
+  @ForeignKey(() => Farmer)
 	@Column({
 		type: DataTypes.UUID,
 		allowNull: false
 	})
 	farmerId!: string;
 
-  @BelongsTo(() => FarmerProfile)
-  farmer!: FarmerProfile;
+  @BelongsTo(() => Farmer)
+  farmer!: Farmer;
 
   @Column({
 		type: DataTypes.STRING,

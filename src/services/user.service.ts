@@ -1,6 +1,6 @@
 // src/services/user.service.ts
 import { UserRepository } from '../repositories/user.repository';
-import { User } from '../models/user.model';
+import { User } from '../models/User';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 

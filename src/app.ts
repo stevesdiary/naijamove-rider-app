@@ -7,13 +7,13 @@ import dotenv from 'dotenv';
 import morgan from 'morgan';
 
 // Database and Model Imports
-import sequelize, { initializeDatabase } from './config/database';
+// import sequelize, { initializeDatabase } from './config/dbConfig';
 import { setupRelationships } from './models';
 
 // Route Imports
 import userRoutes from './routes/userRoute';
-import productRoutes from './routes/productRoute';
-import orderRoutes from './routes/order.routes';
+// import productRoutes from './routes/productRoute';
+// import orderRoutes from './routes/order.routes';
 
 // Error Handling
 import { 
@@ -91,8 +91,8 @@ class App {
 
     // API Routes
     this.app.use('/api/users', userRoutes);
-    this.app.use('/api/products', productRoutes);
-    this.app.use('/api/orders', orderRoutes);
+    // this.app.use('/api/products', productRoutes);
+    // this.app.use('/api/orders', orderRoutes);
   }
 
   private initializeErrorHandling() {
@@ -102,37 +102,37 @@ class App {
     });
 
     // Global Error Handler
-    this.app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-      console.error(err);
+    // this.app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+    //   console.error(err);
 
-      if (err instanceof NotFoundError) {
-        return res.status(404).json({
-          status: 'error',
-          message: err.message
-        });
-      }
+    //   if (err instanceof NotFoundError) {
+    //     return res.status(404).json({
+    //       status: 'error',
+    //       message: err.message
+    //     });
+    //   }
 
-      if (err instanceof ValidationError) {
-        return res.status(400).json({
-          status: 'validation_error',
-          errors: err.errors
-        });
-      }
+    //   if (err instanceof ValidationError) {
+    //     return res.status(400).json({
+    //       status: 'validation_error',
+    //       errors: err.errors
+    //     });
+    //   }
 
-      if (err instanceof DatabaseConnectionError) {
-        return res.status(500).json({
-          status: 'database_error',
-          message: 'Database connection failed'
-        });
-      }
+    //   if (err instanceof DatabaseConnectionError) {
+    //     return res.status(500).json({
+    //       status: 'database_error',
+    //       message: 'Database connection failed'
+    //     });
+    //   }
 
-      // Generic server error
-      res.status(500).json({
-        status: 'error',
-        message: 'Internal Server Error',
-        ...(process.env.NODE_ENV === 'development' && { error: err.message })
-      });
-    });
+    //   // Generic server error
+    //   res.status(500).json({
+    //     status: 'error',
+    //     message: 'Internal Server Error',
+    //     ...(process.env.NODE_ENV === 'development' && { error: err.message })
+    //   });
+    // });
 
     // Unhandled Promise Rejections
     process.on('unhandledRejection', (reason: Error) => {

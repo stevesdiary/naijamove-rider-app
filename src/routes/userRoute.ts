@@ -1,21 +1,13 @@
 import express from 'express';
-import { UserController } from '../controllers/user.controller';
-import { validateRequest } from '../middleware/validate-request';
-import { userRegistrationSchema } from '../validators/user.validator';
+// import  UserController  from '../controllers/user.controller';
+// import { validateRequest } from '../middleware';
+import { userRegistrationSchema, userLoginSchema } from '../validators/user.validator';
 
 const router = express.Router();
-const userController = new UserController();
+// const userController = new UserController();
 
-router.post(
-  '/register', 
-  validateRequest(userRegistrationSchema),
-  userController.register
-);
+// router.post('/register', userController.register);
 
-router.post(
-  '/login', 
-  validateRequest(userLoginSchema),
-  userController.login
-);
+// router.post('/login', userController.login);
 
 export default router;

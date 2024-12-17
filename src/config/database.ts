@@ -1,26 +1,15 @@
-// src/config/database.ts
-import { Sequelize } from 'sequelize-typescript';
+import { Sequelize } from 'sequelize';
 import dotenv from 'dotenv';
 
-// Load environment variables
 dotenv.config();
 
-// Create Sequelize instance
 const sequelize = new Sequelize({
-  dialect: 'postgres', // or mysql, sqlite, etc.
+  dialect: 'mysql',
   host: process.env.DB_HOST,
-  port: parseInt(process.env.DB_PORT || '5432'),
-  username: process.env.DB_USERNAME,
+  username: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
-  models: [
-    __dirname + '/../models/*.model.ts'
-  ],
-  logging: process.env.NODE_ENV === 'development' ? console.log : false,
-  define: {
-    underscored: true, // use snake_case for automatically added attributes
-    timestamps: true   // enable timestamps
-  },
+  logging: false,
   pool: {
     max: 5,
     min: 0,
@@ -28,23 +17,5 @@ const sequelize = new Sequelize({
     idle: 10000
   }
 });
-
-// Authentication and sync
-export const initializeDatabase = async () => {
-  try {
-    await sequelize.authenticate();
-    console.log('Database connection established successfully.');
-    
-    // Only use force in development
-    await sequelize.sync({ 
-      force: process.env.NODE_ENV === 'development',
-      alter: process.env.NODE_ENV === 'development'
-    });
-    console.log('Models synchronized with database.');
-  } catch (error) {
-    console.error('Unable to connect to the database:', error);
-    process.exit(1);
-  }
-};
 
 export default sequelize;

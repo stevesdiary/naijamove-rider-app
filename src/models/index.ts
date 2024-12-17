@@ -1,6 +1,6 @@
 // src/models/index.ts
 import { User } from './User';
-import { FarmerProfile } from './Farmer';
+import Farmer from './Farmer';
 import { Product } from './Product';
 import { Order } from './Order';
 import { OrderItem } from './Order';
@@ -10,21 +10,21 @@ import { Message } from './Message';
 // Define model relationships
 export const setupRelationships = () => {
   // User to FarmerProfile (One-to-One)
-  User.hasOne(FarmerProfile, {
+  User.hasOne(Farmer, {
     foreignKey: 'userId',
     as: 'farmerProfile'
   });
-  FarmerProfile.belongsTo(User, {
+  Farmer.belongsTo(User, {
     foreignKey: 'userId',
     as: 'user'
   });
 
   // FarmerProfile to Products (One-to-Many)
-  FarmerProfile.hasMany(Product, {
+  Farmer.hasMany(Product, {
     foreignKey: 'farmerId',
     as: 'products'
   });
-  Product.belongsTo(FarmerProfile, {
+  Product.belongsTo(Farmer, {
     foreignKey: 'farmerId',
     as: 'farmer'
   });
@@ -69,3 +69,5 @@ export const setupRelationships = () => {
     as: 'product'
   });
 };
+
+export { User, Farmer };

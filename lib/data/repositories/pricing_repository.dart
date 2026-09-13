@@ -30,16 +30,18 @@ class PricingRepository {
           'pickupLng': pickupLng,
           'destinationLat': destLat,
           'destinationLng': destLng,
-          'vehicleCategory': category.wire,
+          'category': category.wire,
           'city': ApiConfig.city,
           if (promoCode != null) 'promoCode': promoCode,
         });
         results.add(FareQuote.fromJson(j, category));
-      } catch (_) {
-        // Skip unavailable categories gracefully.
+      } on ApiException catch (e) {
+        // A category with no pricing config is a 404 — skip it. Anything else
+        // (network, auth) must surface rather than silently showing fake fares.
+        if (e.statusCode != 404) rethrow;
       }
     }
-    return results.isEmpty ? Mock.quotes : results;
+    return results;
   }
 }
 

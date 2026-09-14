@@ -15,8 +15,15 @@ class NotificationsRepository {
   /// GET /notifications
   Future<List<AppNotification>> getNotifications({int limit = 30}) async {
     if (ApiConfig.useMock) return Mock.notifications;
-    final list = await _api.getList('/notifications', query: {'limit': '$limit'});
-    return list.map((e) => AppNotification.fromJson(Map<String, dynamic>.from(e as Map))).toList();
+    final list = await _api.getList(
+      '/notifications',
+      query: {'limit': '$limit'},
+    );
+    return list
+        .map(
+          (e) => AppNotification.fromJson(Map<String, dynamic>.from(e as Map)),
+        )
+        .toList();
   }
 
   /// POST /notifications/:id/read
@@ -36,9 +43,10 @@ final notificationsRepositoryProvider = Provider<NotificationsRepository>(
   (ref) => NotificationsRepository(ref.watch(apiClientProvider)),
 );
 
-final notificationsProvider = AsyncNotifierProvider<_NotificationsNotifier, List<AppNotification>>(
-  _NotificationsNotifier.new,
-);
+final notificationsProvider =
+    AsyncNotifierProvider<_NotificationsNotifier, List<AppNotification>>(
+      _NotificationsNotifier.new,
+    );
 
 class _NotificationsNotifier extends AsyncNotifier<List<AppNotification>> {
   @override
@@ -47,14 +55,20 @@ class _NotificationsNotifier extends AsyncNotifier<List<AppNotification>> {
 
   Future<void> markAllRead() async {
     await ref.read(notificationsRepositoryProvider).markAllRead();
-    final current = state.valueOrNull ?? [];
-    state = AsyncData(current.map((n) => AppNotification(
-      title: n.title,
-      body: n.body,
-      time: n.time,
-      kind: n.kind,
-      unread: false,
-    )).toList());
+    final current = state.value ?? [];
+    state = AsyncData(
+      current
+          .map(
+            (n) => AppNotification(
+              title: n.title,
+              body: n.body,
+              time: n.time,
+              kind: n.kind,
+              unread: false,
+            ),
+          )
+          .toList(),
+    );
   }
 }
 
@@ -68,7 +82,9 @@ class SupportRepository {
   Future<List<SupportCase>> getCases() async {
     if (ApiConfig.useMock) return Mock.cases;
     final list = await _api.getList('/support/cases');
-    return list.map((e) => SupportCase.fromJson(Map<String, dynamic>.from(e as Map))).toList();
+    return list
+        .map((e) => SupportCase.fromJson(Map<String, dynamic>.from(e as Map)))
+        .toList();
   }
 
   /// POST /support/cases
@@ -82,19 +98,22 @@ class SupportRepository {
       return SupportCase(
         reference: 'NM-2026-00999',
         title: category,
-        icon: const Icon(null).icon!,
+        icon: Icons.chat_bubble_outline_rounded,
         status: CaseStatus.open,
         preview: description,
         updated: DateTime.now(),
       );
     }
-    final j = await _api.postJson('/support/cases', body: {
-      'category': category,
-      'subject': category,
-      'description': description,
-      if (tripId != null) 'tripId': tripId,
-      if (resolution != null) 'preferredResolution': resolution,
-    });
+    final j = await _api.postJson(
+      '/support/cases',
+      body: {
+        'category': category,
+        'subject': category,
+        'description': description,
+        'tripId': ?tripId,
+        'preferredResolution': ?resolution,
+      },
+    );
     return SupportCase.fromJson(j);
   }
 
@@ -102,15 +121,24 @@ class SupportRepository {
   Future<List<ChatMessage>> getCaseMessages(String caseId) async {
     if (ApiConfig.useMock) return Mock.caseThread;
     final list = await _api.getList('/support/cases/$caseId/messages');
-    return list.map((e) => ChatMessage.fromJson(Map<String, dynamic>.from(e as Map))).toList();
+    return list
+        .map((e) => ChatMessage.fromJson(Map<String, dynamic>.from(e as Map)))
+        .toList();
   }
 
   /// POST /support/cases/:id/messages
   Future<ChatMessage> sendMessage(String caseId, String body) async {
     if (ApiConfig.useMock) {
-      return ChatMessage(sender: MessageSender.rider, text: body, time: DateTime.now());
+      return ChatMessage(
+        sender: MessageSender.rider,
+        text: body,
+        time: DateTime.now(),
+      );
     }
-    final j = await _api.postJson('/support/cases/$caseId/messages', body: {'body': body});
+    final j = await _api.postJson(
+      '/support/cases/$caseId/messages',
+      body: {'body': body},
+    );
     return ChatMessage.fromJson(j);
   }
 }
@@ -119,16 +147,20 @@ final supportRepositoryProvider = Provider<SupportRepository>(
   (ref) => SupportRepository(ref.watch(apiClientProvider)),
 );
 
-final supportCasesProvider = AsyncNotifierProvider<_SupportCasesNotifier, List<SupportCase>>(
-  _SupportCasesNotifier.new,
-);
+final supportCasesProvider =
+    AsyncNotifierProvider<_SupportCasesNotifier, List<SupportCase>>(
+      _SupportCasesNotifier.new,
+    );
 
 class _SupportCasesNotifier extends AsyncNotifier<List<SupportCase>> {
   @override
-  Future<List<SupportCase>> build() => ref.watch(supportRepositoryProvider).getCases();
+  Future<List<SupportCase>> build() =>
+      ref.watch(supportRepositoryProvider).getCases();
 
   Future<void> refresh() async {
-    state = await AsyncValue.guard(() => ref.read(supportRepositoryProvider).getCases());
+    state = await AsyncValue.guard(
+      () => ref.read(supportRepositoryProvider).getCases(),
+    );
   }
 }
 
@@ -142,14 +174,22 @@ class PromotionsRepository {
   Future<List<Promo>> getMyPromos() async {
     if (ApiConfig.useMock) return Mock.promos;
     final list = await _api.getList('/promotions/my');
-    return list.map((e) => Promo.fromJson(Map<String, dynamic>.from(e as Map))).toList();
+    return list
+        .map((e) => Promo.fromJson(Map<String, dynamic>.from(e as Map)))
+        .toList();
   }
 
   /// POST /promotions/validate
   Future<Promo> validateCode(String code) async {
     if (ApiConfig.useMock) {
-      final found = Mock.promos.where((p) => p.code == code.toUpperCase()).firstOrNull;
-      if (found == null) throw const ApiException('INVALID_CODE', 'Promo code not found or expired.');
+      final found = Mock.promos
+          .where((p) => p.code == code.toUpperCase())
+          .firstOrNull;
+      if (found == null)
+        throw const ApiException(
+          'INVALID_CODE',
+          'Promo code not found or expired.',
+        );
       return found;
     }
     final j = await _api.postJson('/promotions/validate', body: {'code': code});

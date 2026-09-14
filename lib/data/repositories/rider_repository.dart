@@ -29,9 +29,9 @@ class RiderRepository {
   Future<RiderProfile> updateProfile({String? name, String? email, String? preferredPaymentMethod}) async {
     if (ApiConfig.useMock) return getProfile();
     final j = await _api.putJson('/riders/me', body: {
-      if (name != null) 'name': name,
-      if (email != null) 'email': email,
-      if (preferredPaymentMethod != null) 'preferredPaymentMethod': preferredPaymentMethod,
+      'name': ?name,
+      'email': ?email,
+      'preferredPaymentMethod': ?preferredPaymentMethod,
     });
     return RiderProfile.fromJson(j);
   }
@@ -50,8 +50,8 @@ class RiderRepository {
       'label': label,
       'name': name,
       'address': address,
-      if (lat != null) 'lat': lat,
-      if (lng != null) 'lng': lng,
+      'lat': ?lat,
+      'lng': ?lng,
     });
     return Place.fromSaved(j);
   }
@@ -105,7 +105,7 @@ class _RiderProfileNotifier extends AsyncNotifier<RiderProfile> {
     state = await AsyncValue.guard(() => ref.read(riderRepositoryProvider).getProfile());
   }
 
-  Future<void> update({String? name, String? email}) async {
+  Future<void> updateProfile({String? name, String? email}) async {
     final updated = await ref.read(riderRepositoryProvider).updateProfile(name: name, email: email);
     state = AsyncData(updated);
   }

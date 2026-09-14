@@ -14,6 +14,7 @@ import '../../core/widgets/buttons.dart';
 import '../../core/widgets/components.dart';
 import '../../core/widgets/inputs.dart';
 import '../../data/mock_data.dart';
+import '../../data/api/api_client.dart';
 import '../../data/repositories/auth_repository.dart';
 
 /// Small eyebrow chip above auth headings ("LAGOS RIDER VERIFICATION").
@@ -413,6 +414,7 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
         refreshToken: result.refreshToken,
         userId: result.result.userId,
       );
+      if (!mounted) return;
       if (result.result.isNewUser) {
         context.go(Routes.profileSetup);
       } else {

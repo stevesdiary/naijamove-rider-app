@@ -45,10 +45,10 @@ class RidesRepository {
       'destinationLng': destination.lng,
       'vehicleCategory': category.wire,
       'paymentMethod': paymentMethod,
-      if (quoteId != null) 'quoteId': quoteId,
-      if (promoCode != null) 'promoCode': promoCode,
-      if (mode != TripMode.immediate) 'mode': mode.name,
-      if (scheduledFor != null) 'scheduledFor': scheduledFor.toIso8601String(),
+      'quoteId': ?quoteId,
+      'promoCode': ?promoCode,
+      'mode': mode.name,
+      'scheduledFor': scheduledFor?.toIso8601String(),
       if (stops.isNotEmpty)
         'stops': stops.map((s) => {'address': s.address, 'lat': s.lat, 'lng': s.lng}).toList(),
     });
@@ -65,7 +65,7 @@ class RidesRepository {
   /// POST /rides/:id/cancel
   Future<void> cancelTrip(String tripId, {String? reason}) async {
     if (ApiConfig.useMock) return;
-    await _api.postJson('/rides/$tripId/cancel', body: {if (reason != null) 'reason': reason});
+    await _api.postJson('/rides/$tripId/cancel', body: {'reason': ?reason});
   }
 
   /// GET /rides — trip history.
@@ -74,7 +74,7 @@ class RidesRepository {
     final list = await _api.getList('/rides', query: {
       'limit': '$limit',
       'offset': '$offset',
-      if (status != null) 'status': status,
+      'status': ?status,
     });
     return list.map((e) => Trip.fromJson(Map<String, dynamic>.from(e as Map))).toList();
   }

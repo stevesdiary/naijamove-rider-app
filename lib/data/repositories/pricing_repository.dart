@@ -32,7 +32,7 @@ class PricingRepository {
           'destinationLng': destLng,
           'category': category.wire,
           'city': ApiConfig.city,
-          if (promoCode != null) 'promoCode': promoCode,
+          'promoCode': ?promoCode,
         });
         results.add(FareQuote.fromJson(j, category));
       } on ApiException catch (e) {

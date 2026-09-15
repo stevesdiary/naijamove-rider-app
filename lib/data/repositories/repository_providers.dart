@@ -5,7 +5,6 @@ library;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../api/api_client.dart';
-import '../../app/state/app_state.dart';
 
 final tokenStoreProvider = Provider<TokenStore>((_) => TokenStore());
 

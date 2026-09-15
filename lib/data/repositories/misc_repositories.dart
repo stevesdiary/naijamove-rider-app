@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../api/api_client.dart';
@@ -185,11 +186,12 @@ class PromotionsRepository {
       final found = Mock.promos
           .where((p) => p.code == code.toUpperCase())
           .firstOrNull;
-      if (found == null)
+      if (found == null) {
         throw const ApiException(
           'INVALID_CODE',
           'Promo code not found or expired.',
         );
+      }
       return found;
     }
     final j = await _api.postJson('/promotions/validate', body: {'code': code});
